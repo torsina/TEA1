@@ -33,21 +33,18 @@ def searchCount(column, wantedValue):
 
         print(counter)
 
-def getColumn(column):
+def getColumn(column, database):
     with open('titanic.csv') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        line_count = 0
+        if not database:
+            database = csv.reader(csv_file, delimiter=',')
+        dict = getIndexDict()
         wantedIndex = 0
         result = []
-        for row in csv_reader:
-            if line_count == 0:
-                for index, item in enumerate(row):
-                    if item == column:
-                        wantedIndex = index
-                        break
+        for index, row in enumerate(database):
+            if index == 0 and dict:
+                wantedIndex = dict[column]
             else:
                 result.append(row[wantedIndex])
-            line_count = line_count + 1
         return result
 
 def average(column, type):
@@ -60,10 +57,7 @@ def average(column, type):
                 continue
             n = n + 1
             item = item.replace(",", ".")
-            print(str(item))
             item = float(item)
-            print(str(item))
-            print(".")
             average = average + item
     average = average / n
     return average
@@ -110,4 +104,26 @@ def filtersArray(list):
 # print(filtersArray([["sex", "male"], ["age", "42"]])[0][2])
 
 def maxPriceTicket():
-    
+    column = getColumn("fare")
+    max = 0
+    for item in column:
+        if item == "":
+            continue
+        item = item.replace(",", ".")
+        if float(item) > max:
+            max = float(item)
+    max = str(max).replace(".", ",")
+    array = filtersArray([["fare", max]])
+    return array
+
+# print(len(maxPriceTicket()))
+
+def survivors(sex):
+    allSex = filtersArray([["sex", sex]])
+    filteredSex = filtersArray([["sex", sex], ["survived", "1"]])
+    return len(filteredSex)/len(allSex)
+
+def womenFirst():
+    women = survivors("female")
+    men = survivors("male")
+    print(str(round(women * 100, ndigits=0)), str(round(men * 100, ndigits=0)))
