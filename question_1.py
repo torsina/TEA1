@@ -33,7 +33,7 @@ def searchCount(column, wantedValue):
 
         print(counter)
 
-def getColumn(column, database):
+def getColumn(column, database = []):
     with open('titanic.csv') as csv_file:
         if not database:
             database = csv.reader(csv_file, delimiter=',')
@@ -93,15 +93,15 @@ def getIndexDict():
         return dict
 
 
-def filtersArray(list):
+def filtersArray(_list):
     dict = getIndexDict()
     with open('titanic.csv') as csv_file:
         database = csv.reader(csv_file, delimiter=',')
-        for filter in list:
+        for filter in _list:
             database = filterArray(filter[0], filter[1], database, dict)
-        return database
+        return list(database)
 
-# print(filtersArray([["sex", "male"], ["age", "42"]])[0][2])
+# print(filtersArray([["sex", "male"], ["age", "42"], ["survived", "1"]])[0][2])
 
 def maxPriceTicket():
     column = getColumn("fare")
@@ -126,4 +126,44 @@ def survivors(sex):
 def womenFirst():
     women = survivors("female")
     men = survivors("male")
-    print(str(round(women * 100, ndigits=0)), str(round(men * 100, ndigits=0)))
+    return str(round(women * 100, ndigits=0)), str(round(men * 100, ndigits=0))
+
+def q2():
+    print("q2: " + str(len(getColumn("pclass"))))
+q2()
+
+def q3():
+    print("q3: " + str(len(filtersArray([["survived", "1"]]))))
+q3()
+
+def q4():
+    women = filtersArray([["sex", "female"]])
+    all = list(filtersArray([]))
+    print("q4: " + str(round(len(women)/len(all) * 100, ndigits=1)))
+
+q4()
+
+def q5():
+    print("q5: " + str(round(average("age", "number"), ndigits=2)))
+
+q5()
+
+def q6():
+    print("q6: " + str(filtersArray([["sex", "male"], ["age", "42"], ["survived", "1"]])[0][2]))
+
+q6()
+
+def q7():
+    print("q7: " + str(len(maxPriceTicket())))
+
+q7()
+
+def q8():
+    womenS = filtersArray([["sex", "female"], ["survived", "1"]])
+    menS = filtersArray([["sex", "male"], ["survived", "1"]])
+    womenA = filtersArray([["sex", "female"]])
+    menA = filtersArray([["sex", "male"]])
+
+    print("q8: " + str(round((len(menS)/len(menA))*100, ndigits=0)) + ", " + str(round((len(womenS)/len(womenA))*100, ndigits=0)))
+
+q8()
